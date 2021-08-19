@@ -2,7 +2,7 @@ const { client, getAllUsers, createUser } = require("./index");
 
 // attempt to create users
 
-async function createInitialUsers() {
+const createInitialUsers = async () => {
   try {
     console.log("Starting to create users..");
 
@@ -29,7 +29,7 @@ async function createInitialUsers() {
   }
 }
 
-async function rebuildDB() {
+const rebuildDB = async () => {
   try {
     client.connect();
 
@@ -54,7 +54,7 @@ async function dropTables() {
 
 // call a query which creates all tables for our database
 
-async function createTables() {
+const createTables= async () => {
   try {
     console.log("Starting to build tables..");
     await client.query(`
@@ -71,7 +71,7 @@ async function createTables() {
   }
 }
 
-async function testDB() {
+const testDB = async () => {
   try {
     console.log("Starting to test database..");
 
