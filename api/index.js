@@ -13,6 +13,10 @@ apiRouter.use("/posts", postsRouter);
 const tagsRouter = require("./tags");
 apiRouter.use("/tags", tagsRouter);
 
+// const loginRouter = require("./login");
+// apiRouter.use("/login", loginRouter);
+
+
 apiRouter.use(async (req, res, next) => {
   const prefix = "Bearer ";
   const auth = req.header("Authorization");
@@ -41,8 +45,15 @@ apiRouter.use(async (req, res, next) => {
   }
 });
 
-apiRouter.use((error, req, res, next) => {
-  res.send(error);
-});
-
+// apiRouter.use((error, req, res, next) => {
+//   res.send(error);
+// });
+apiRouter.use((req, res, next) => {
+    if (req.user) {
+      console.log("User is set:", req.user);
+    }
+  
+    next();
+  });
+  
 module.exports = apiRouter;
