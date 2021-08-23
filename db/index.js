@@ -107,12 +107,7 @@ async function getUserById(userId) {
  * POST Methods
  */
 
-async function createPost({ 
-   authorId, 
-   title, 
-   content, 
-   tags = [] 
-   }) {
+async function createPost({ authorId, title, content, tags = [] }) {
   try {
     const {
       rows: [post],
@@ -219,10 +214,9 @@ async function getPostById(postId) {
     if (!post) {
       throw {
         name: "PostNotFoundError",
-        message: "Could not find a post with that postId"
+        message: "Could not find a post with that postId",
       };
     }
-
 
     const { rows: tags } = await client.query(
       `
@@ -294,11 +288,16 @@ async function getPostsByTagName(tagName) {
 }
 async function getUserByUsername(username) {
   try {
-    const { rows: [user] } = await client.query(`
+    const {
+      rows: [user],
+    } = await client.query(
+      `
       SELECT *
       FROM users
       WHERE username=$1;
-    `, [username]);
+    `,
+      [username]
+    );
 
     return user;
   } catch (error) {

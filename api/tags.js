@@ -1,5 +1,5 @@
 const express = require("express");
-const { getAllTags } = require("../db");
+const { getAllTags, getPostsByTagName } = require("../db");
 const tagsRouter = express.Router();
 
 tagsRouter.get("/", async (req, res) => {
@@ -10,15 +10,22 @@ tagsRouter.get("/", async (req, res) => {
   });
 });
 tagsRouter.get("/:tagName/posts", async (req, res, next) => {
-  // read the tagname from the params
+  // read the tagname from the params function getPostsByTagName
   const { tagName } = req.params;
-  // read the tagname from the params
+  if (tagName) {
+    next();
+  }
+  // Cannot for the life of me figure out what data to grab from. "tagname". This at least does not break:
 
   try {
+    const postIds = await getPostsByTagName(tagName);
+    if (postIds) {
+      res.send({ post: posts });
+    }
     // use our method to get posts by tag name from the db
     // send out an object to the client { posts: // the posts }
   } catch ({ name, message }) {
-    // forward the name and message to the error handler
+    next({ name, message }); // forward the name and message to the error handler
   }
 });
 

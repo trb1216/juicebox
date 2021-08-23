@@ -3,16 +3,16 @@ const { requireUser } = require("./utils");
 const express = require("express");
 const postsRouter = express.Router();
 
-postsRouter.get('/', async (req, res) => {
+postsRouter.get("/", async (req, res) => {
   try {
     const allPosts = await getAllPosts();
 
-    const posts = allPosts.filter(post => {
+    const posts = allPosts.filter((post) => {
       return post.active || (req.user && post.author.id === req.user.id);
     });
 
     res.send({
-      posts
+      posts,
     });
   } catch ({ name, message }) {
     next({ name, message });
@@ -27,25 +27,25 @@ postsRouter.post("/", requireUser, async (req, res, next) => {
     postData.tags = tagArr;
   }
 
-  try { /*  There is no way this is right, I just cant think of what else:            */
-    postData.authorId = post.id;
+  try {
+    //  There is no way this is right, I just cant think of what else:
+    postData.authorId = req.user.id;
     postData.title = title;
     postData.content = content;
-  
+
     // add authorId, title, content to postData object
     const post = await createPost(postData);
-       if (post) {
-        res.send({ post });
-       } else {
-       next(error);
-       };
-  
+    if (post) {
+      res.send({ post });
+    } else {
+      next(error);
+    }
   } catch ({ name, message }) {
     next({ name, message });
   }
 });
 
-postsRouter.patch('/:postId', requireUser, async (req, res, next) => {
+postsRouter.patch("/:postId", requireUser, async (req, res, next) => {
   const { postId } = req.params;
   const { title, content, tags } = req.body;
 
@@ -68,18 +68,18 @@ postsRouter.patch('/:postId', requireUser, async (req, res, next) => {
 
     if (originalPost.author.id === req.user.id) {
       const updatedPost = await updatePost(postId, updateFields);
-      res.send({ post: updatedPost })
+      res.send({ post: updatedPost });
     } else {
       next({
-        name: 'UnauthorizedUserError',
-        message: 'You cannot update a post that is not yours'
-      })
+        name: "UnauthorizedUserError",
+        message: "You cannot update a post that is not yours",
+      });
     }
   } catch ({ name, message }) {
     next({ name, message });
   }
 });
-postsRouter.delete('/:postId', requireUser, async (req, res, next) => {
+postsRouter.delete("/:postId", requireUser, async (req, res, next) => {
   try {
     const post = await getPostById(req.params.postId);
 
@@ -89,17 +89,20 @@ postsRouter.delete('/:postId', requireUser, async (req, res, next) => {
       res.send({ post: updatedPost });
     } else {
       // if there was a post, throw UnauthorizedUserError, otherwise throw PostNotFoundError
-      next(post ? { 
-        name: "UnauthorizedUserError",
-        message: "You cannot delete a post which is not yours"
-      } : {
-        name: "PostNotFoundError",
-        message: "That post does not exist"
-      });
+      next(
+        post
+          ? {
+              name: "UnauthorizedUserError",
+              message: "You cannot delete a post which is not yours",
+            }
+          : {
+              name: "PostNotFoundError",
+              message: "That post does not exist",
+            }
+      );
     }
-
   } catch ({ name, message }) {
-    next({ name, message })
+    next({ name, message });
   }
 });
 

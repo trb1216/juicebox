@@ -9,15 +9,13 @@ const morgan = require("morgan");
 const { client } = require("./db");
 server.use(bodyParser.json());
 
-
 server.use(morgan("dev"));
 server.use("/api", apiRouter);
 client.connect();
 
-
-server.get('/background/:color', (req, res, next) => {
+server.get("/background/:color", (req, res, next) => {
   res.send(`
-    <body style="background: ${ req.params.color };">
+    <body style="background: ${req.params.color};">
       <h1>Hello World</h1>
     </body>
   `);
