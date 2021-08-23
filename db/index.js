@@ -107,7 +107,12 @@ async function getUserById(userId) {
  * POST Methods
  */
 
-async function createPost({ authorId, title, content, tags = [] }) {
+async function createPost({ 
+   authorId, 
+   title, 
+   content, 
+   tags = [] 
+   }) {
   try {
     const {
       rows: [post],
@@ -210,6 +215,14 @@ async function getPostById(postId) {
     `,
       [postId]
     );
+
+    if (!post) {
+      throw {
+        name: "PostNotFoundError",
+        message: "Could not find a post with that postId"
+      };
+    }
+
 
     const { rows: tags } = await client.query(
       `
@@ -396,4 +409,5 @@ module.exports = {
   addTagsToPost,
   getAllTags,
   getUserByUsername,
+  getPostById,
 };

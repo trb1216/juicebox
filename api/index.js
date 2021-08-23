@@ -3,19 +3,19 @@ const { getUserById } = require("../db");
 const { JWT_SECRET } = process.env;
 const express = require("express");
 const apiRouter = express.Router();
-
+const postsRouter = require("./posts");
 const usersRouter = require("./users");
+const tagsRouter = require("./tags");
+
+
 apiRouter.use("/users", usersRouter);
 
-const postsRouter = require("./posts");
 apiRouter.use("/posts", postsRouter);
 
-const tagsRouter = require("./tags");
 apiRouter.use("/tags", tagsRouter);
 
 // const loginRouter = require("./login");
 // apiRouter.use("/login", loginRouter);
-
 
 apiRouter.use(async (req, res, next) => {
   const prefix = "Bearer ";
@@ -49,11 +49,11 @@ apiRouter.use(async (req, res, next) => {
 //   res.send(error);
 // });
 apiRouter.use((req, res, next) => {
-    if (req.user) {
-      console.log("User is set:", req.user);
-    }
-  
-    next();
-  });
-  
+  if (req.user) {
+    console.log("User is set:", req.user);
+  }
+
+  next();
+});
+
 module.exports = apiRouter;
